@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 class ShowWord {
   static void show(BuildContext context, {required WordModel word}) {
     showModalBottomSheet(
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(20),
@@ -61,7 +62,7 @@ class ShowWord {
                 title: 'OBSERVAÇÃO',
                 content: word.note,
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 40),
             ],
           ),
         );

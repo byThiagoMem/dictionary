@@ -1,5 +1,6 @@
 import 'package:dictionary/app/modules/home/home_module.dart';
 import 'package:dictionary/app/modules/splash/splash_module.dart';
+import 'package:dictionary/app/shared/notifications/notification_service.dart';
 import 'package:dictionary/app/shared/repository/dictionary_repository.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -7,6 +8,7 @@ class AppModule extends Module {
   @override
   final List<Bind> binds = [
     Bind.lazySingleton((i) => DictionaryRepository()),
+    Bind.singleton((i) => NotificationService()),
   ];
 
   @override
