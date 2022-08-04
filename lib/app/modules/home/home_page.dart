@@ -1,9 +1,5 @@
 import 'package:dictionary/app/modules/home/cubit/home_state.dart';
 import 'package:dictionary/app/modules/home/widgets/add_word.dart';
-import 'package:dictionary/app/modules/home/widgets/delete_word.dart';
-import 'package:dictionary/app/modules/home/widgets/show_word.dart';
-import 'package:dictionary/app/shared/models/notification_model.dart';
-import 'package:dictionary/app/shared/notifications/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -11,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../shared/components/custom_loading.dart';
 import 'cubit/home_cubit.dart';
+import 'widgets/delete_word.dart';
+import 'widgets/show_word.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -41,28 +39,6 @@ class _HomePageState extends State<HomePage> {
     _formKey = GlobalKey<FormState>();
   }
 
-  _showNotification() {
-    Modular.get<NotificationService>().showNotification(
-      NotificationModel(
-        id: 1,
-        title: 'Teste',
-        body: 'Acesse o app',
-        payload: '/home/',
-      ),
-    );
-  }
-
-  _scheduleNotification() {
-    Modular.get<NotificationService>().scheduleNotification(
-      NotificationModel(
-        id: 1,
-        title: 'Teste',
-        body: 'Acesse o app',
-        payload: '/home/',
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,11 +63,15 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           }
-          if (state.isLoading) {
-            if (state.isLoading) const CustomLoading();
-          }
         },
         builder: (_, state) {
+          if (state.isLoading) {
+            if (state.isLoading) {
+              return const Center(
+                child: CustomLoading(),
+              );
+            }
+          }
           return CustomScrollView(
             slivers: [
               SliverAppBar(
@@ -120,54 +100,51 @@ class _HomePageState extends State<HomePage> {
               SliverVisibility(
                 visible: state.data.isNotEmpty,
                 sliver: SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: double.maxFinite,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      itemCount: state.data.length,
-                      itemBuilder: ((context, index) {
-                        return Theme(
-                          data: ThemeData(
-                            splashColor: Colors.pink[100],
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              state.data[index].word,
-                              style: GoogleFonts.comicNeue(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: 1.5,
-                              ),
-                            ),
-                            trailing: IconButton(
-                              splashRadius: 20,
-                              splashColor: Colors.grey,
-                              onPressed: () {
-                                DeleteWord.delete(
-                                  context,
-                                  onPressed: () => _cubit.deleteWord(
-                                    word: state.data[index],
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: 8,
+                      right: 8,
+                      bottom: MediaQuery.of(context).size.height * .12,
+                    ),
+                    child: Column(
+                      children: (state.data
+                          .map(
+                            (word) => Column(
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                    word.word,
+                                    style: GoogleFonts.comicNeue(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 1.5,
+                                    ),
                                   ),
-                                );
-                              },
-                              icon: Icon(
-                                Icons.delete,
-                                color: Colors.pink[100],
-                              ),
+                                  trailing: IconButton(
+                                    splashRadius: 10,
+                                    splashColor: Colors.grey,
+                                    onPressed: () => DeleteWord.delete(
+                                      context,
+                                      onPressed: () => _cubit.deleteWord(
+                                        word: word,
+                                      ),
+                                    ),
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.pink[100],
+                                    ),
+                                  ),
+                                  onTap: () => ShowWord.show(
+                                    context,
+                                    word: word,
+                                  ),
+                                ),
+                                const Divider(height: double.minPositive),
+                              ],
                             ),
-                            onTap: () => ShowWord.show(
-                              context,
-                              word: state.data[index],
-                            ),
-                          ),
-                        );
-                      }),
-                      separatorBuilder: (context, index) {
-                        return const Divider(
-                          height: double.minPositive,
-                        );
-                      },
+                          )
+                          .toList()),
                     ),
                   ),
                 ),
@@ -188,6 +165,7 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       resizeToAvoidBottomInset: false,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {

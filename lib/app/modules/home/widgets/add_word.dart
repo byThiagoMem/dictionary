@@ -111,9 +111,10 @@ class AddWord {
                       child: Text(
                         'Salvar',
                         style: GoogleFonts.comicNeue(
-                            color: Colors.white,
-                            fontSize: 16,
-                            letterSpacing: 1.5),
+                          color: Colors.white,
+                          fontSize: 16,
+                          letterSpacing: 1.5,
+                        ),
                       ),
                     ),
                   ],

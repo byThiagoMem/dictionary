@@ -7,7 +7,7 @@ import 'home_page.dart';
 class HomeModule extends Module {
   @override
   final List<Bind> binds = [
-    BlocBind.lazySingleton((i) => HomeCubit(i())),
+    BlocBind.lazySingleton((i) => HomeCubit(i(), i())),
   ];
 
   @override

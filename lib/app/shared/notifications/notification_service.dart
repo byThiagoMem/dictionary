@@ -7,7 +7,15 @@ import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   late FlutterLocalNotificationsPlugin localNotificationsPlugin;
-  late AndroidNotificationDetails androidDetails;
+
+  final _androidDetails = const AndroidNotificationDetails(
+    'lembrete_notifications',
+    'Lembrete',
+    channelDescription: 'Canal para lembretes',
+    importance: Importance.max,
+    priority: Priority.max,
+    enableVibration: true,
+  );
 
   NotificationService() {
     localNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -41,51 +49,27 @@ class NotificationService {
     }
   }
 
-  showNotification(NotificationModel notification) {
-    androidDetails = const AndroidNotificationDetails(
-      'lembrete_notifications',
-      'Lembrete',
-      channelDescription: 'Canal para lembretes',
-      importance: Importance.max,
-      priority: Priority.max,
-      enableVibration: true,
-    );
-
-    localNotificationsPlugin.show(
-      notification.id,
-      notification.title,
-      notification.body,
-      NotificationDetails(
-        android: androidDetails,
-      ),
-      payload: notification.payload,
-    );
-  }
-
-  scheduleNotification(NotificationModel notification) {
-    final date = DateTime.now().add(const Duration(seconds: 5));
-    androidDetails = const AndroidNotificationDetails(
-      'lembrete_notifications',
-      'Lembrete',
-      channelDescription: 'Canal para lembretes',
-      importance: Importance.max,
-      priority: Priority.max,
-      enableVibration: true,
-    );
-
+  scheduleNotification({
+    required NotificationModel notification,
+    required DateTime dateTime,
+  }) {
     localNotificationsPlugin.zonedSchedule(
       notification.id,
       notification.title,
       notification.body,
-      tz.TZDateTime.from(date, tz.local),
+      tz.TZDateTime.from(dateTime, tz.local),
       NotificationDetails(
-        android: androidDetails,
+        android: _androidDetails,
       ),
       payload: notification.payload,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
+  }
+
+  cancelAllNotifications() {
+    localNotificationsPlugin.cancelAll();
   }
 
   checkForNotifications() async {

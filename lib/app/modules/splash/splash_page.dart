@@ -12,15 +12,14 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  checkNotification() async {
-    await Modular.get<NotificationService>().checkForNotifications();
+  @override
+  void initState() {
+    Modular.get<NotificationService>().checkForNotifications();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 2)).then(
-      (_) => checkNotification(),
-    );
     return const Scaffold(
       body: Center(
         child: CustomLoading(),
