@@ -35,9 +35,14 @@ class NotificationService {
 
   _initializeNotifications() async {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const IOSInitializationSettings initializationSettingsIOS =
+        IOSInitializationSettings(requestAlertPermission: true);
+
     await localNotificationsPlugin.initialize(
       const InitializationSettings(
         android: android,
+        iOS: initializationSettingsIOS,
       ),
       onSelectNotification: _onSelectecNotification,
     );

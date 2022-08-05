@@ -23,7 +23,7 @@ class AppWidget extends StatelessWidget {
       ),
     );
     return MaterialApp.router(
-      title: 'Dictionary',
+      title: 'Vocabulary',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,

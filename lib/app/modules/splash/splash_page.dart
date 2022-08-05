@@ -1,8 +1,7 @@
-import 'package:dictionary/app/shared/notifications/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../../shared/components/custom_loading.dart';
+import '../../shared/notifications/notification_service.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -11,18 +10,51 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation _animation;
+
   @override
   void initState() {
-    Modular.get<NotificationService>().checkForNotifications();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 1800,
+      ),
+    )..forward();
+    _animation = Tween(begin: 0.0, end: 250.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.bounceOut,
+      ),
+    );
+    Future.delayed(const Duration(milliseconds: 2300)).then(
+      (_) {
+        return Modular.get<NotificationService>().checkForNotifications();
+      },
+    );
     super.initState();
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CustomLoading(),
+    return Scaffold(
+      body: AnimatedBuilder(
+        animation: _controller,
+        builder: (_, __) {
+          return Center(
+            child: Image.asset(
+              'assets/icons/app_icon_foreground.png',
+              height: _animation.value,
+            ),
+          );
+        },
       ),
     );
   }
