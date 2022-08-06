@@ -34,7 +34,7 @@ class NotificationService {
   }
 
   _initializeNotifications() async {
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const android = AndroidInitializationSettings('@mipmap/launcher_icon');
 
     const IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(requestAlertPermission: true);

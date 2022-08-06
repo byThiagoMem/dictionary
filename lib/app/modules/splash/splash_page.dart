@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../../shared/notifications/notification_service.dart';
-
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
@@ -30,7 +28,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     );
     Future.delayed(const Duration(milliseconds: 2300)).then(
       (_) {
-        return Modular.get<NotificationService>().checkForNotifications();
+        Modular.to.navigate('/home/');
       },
     );
     super.initState();
